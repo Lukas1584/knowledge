@@ -1,0 +1,51 @@
+CMake - это межплатформенная система автоматизации сборки.
+
+Сборка с помощью CMake:
+mkdir build # создание директории для сборки
+cd build # переход в директорию для сборки
+cmake .. # запуск CMake
+make # сборка проекта
+
+CMakeLists.txt:
+-cmake_minimum_required(VERSION version_number): Это определяет минимальную версию CMake, которая требуется для сборки проекта.
+-project(project_name): Это определяет имя вашего проекта.
+-add_executable(target_name source1 source2 ...): Это создает исполняемый файл с именем target_name из указанных исходных файлов.
+-add_library(target_name [STATIC|SHARED|MODULE] source1 source2 ...): Это создает библиотеку (статическую, динамическую или модульную) с именем target_name из указанных исходных файлов.
+-target_link_libraries(target lib1 lib2 ...): Это связывает указанные библиотеки с целевым файлом (исполняемым файлом или библиотекой).
+-find_package(package_name): Это ищет пакет с именем package_name, обычно с целью использования библиотек, предоставленных этим пакетом.
+-include_directories(directory1 directory2 ...): Это добавляет указанные директории в пути поиска включаемых файлов.
+-set(variable value): Это устанавливает значение переменной.
+Команды условий и циклов (if, else, elseif, endif, foreach, endforeach), которые позволяют добавлять логику в процесс сборки.
+
+Пример. В этом примере подразумевается, что у вас есть два исходных файла (main.cpp и my_other_file.cpp) и вы используете библиотеку Boost, а именно ее компонент filesystem. set(BOOST_ROOT "/path/to/your/boost") необходимо заменить на реальный путь до вашей библиотеки Boost. То же касается и указания путей до Google Test.
+Тестовые файлы здесь закомментированы, но вы можете их раскомментировать и заменить на собственные файлы с тестами. gtest и gtest_main - это библиотеки Google Test, с которыми связывается исполняемый файл тестов.
+
+cmake_minimum_required(VERSION 3.10)
+project(MyProject)
+
+set(CMAKE_CXX_STANDARD 14)
+
+# Добавление папки с заголовочными файлами
+include_directories(./path_to_headers/)
+
+# Добавление исполняемого файла
+add_executable(MyExec main.cpp my_other_file.cpp)
+
+# Укажите путь к библиотеке Boost
+set(BOOST_ROOT "/path/to/your/boost")
+
+# Найдите пакет Boost.
+# Обратите внимание на COMPONENTS: эти компоненты Boost, которые вам нужны
+find_package(Boost 1.71.0 COMPONENTS filesystem REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
+# Свяжите исполняемый файл с необходимыми библиотеками
+target_link_libraries(MyExec ${Boost_LIBRARIES})
+
+# Добавление Google Test
+add_subdirectory(/path/to/your/googletest)
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+
+# Раскомментируйте нижеследующие строки, чтобы добавить еще один исполняемый файл для тестирования
+# add_executable(runUnitTests testfile1.cpp testfile2.cpp)
+# target_link_libraries(runUnitTests gtest gtest_main)

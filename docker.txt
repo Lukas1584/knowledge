@@ -1,0 +1,25 @@
+
+
+Запуск С++ проекта CMakeLists.txt c boost и googletest.
+# начальный образ
+FROM ubuntu:latest
+
+# обновление списка пакетов в образе и установка необходимых пакетов
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    cmake \
+    libboost-all-dev \
+    git
+
+# клонирование GoogleTest из репозитория и сборка его
+RUN git clone https://github.com/google/googletest.git
+RUN cd googletest && mkdir build && cd build && cmake .. && make && make install
+
+# копирование текущей директории (где расположен Dockerfile и ваш код) в директорию /app в образе
+COPY . /app
+
+# установка рабочей директории
+WORKDIR /app/build
+
+# запуск сборки проекта
+RUN cmake .. && make

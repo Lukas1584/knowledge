@@ -1,0 +1,35 @@
+CMake
+Для добавления в проект VS Code:
+Вам потребуется файл tasks.json. Ctrl+Shift+B и выберите команду Configure Build Task.
+Он должен содержать действия по сборке вашего проекта и тестов, а также информацию о том, где находится бинарный файл Google Test (gtest_main.a или gtest.lib).
+tasks.json:
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build and test",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++14",
+                "-I",
+                "path_to_your_project",
+                "path_to_your_project/test/your_test.cpp",
+                "-Lpath_to_googletest_lib",
+                "-lgtest_main",
+                "-lgtest",
+                "-pthread",
+                "-o",
+                "test"
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always"
+            }
+        }
+    ]
+}
+Когда вы хотите запустить тест, просто нажмите Ctrl+Shift+B и выберите задачу "build and test".

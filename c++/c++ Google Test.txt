@@ -1,0 +1,115 @@
+Установка:
+git clone https://github.com/google/googletest.git
+cd googletest
+mkdir build && cd build
+cmake ..
+make
+Теперь у вас есть статические библиотеки gtest и gtest_main, которые вы можете связать со своим проектом.
+#include <gtest/gtest.h>
+#include <gmock/gmock.h>
+
+Макросы:
+TEST(TestCaseName, TestName) {...}
+ASSERT_* макросы: Это "мертвые" проверки, которые завершают выполнение теста в случае неудачи.
+EXPECT_* макросы: Это "неживые" проверки, которые записывают результат анализа и позволяют тесту продолжить выполнение в случае неудачи.
+ASSERT_EQ(a, b)
+ASSERT_NE(a, b)
+ASSERT_LT(a, b)
+ASSERT_LE(a, b)
+ASSERT_GT(a, b)
+ASSERT_GE(a, b)
+EXPECT_EQ(a, b)
+EXPECT_NE(a, b)
+EXPECT_LT(a, b)
+EXPECT_LE(a, b)
+EXPECT_GT(a, b)
+EXPECT_GE(a, b)
+ASSERT_TRUE(condition)
+ASSERT_FALSE(condition)
+EXPECT_TRUE(condition)
+EXPECT_FALSE(condition)
+
+Проверка строк (std::string и C-строки):
+ASSERT_STREQ(a, b)
+ASSERT_STRNE(a, b)
+ASSERT_STRCASEEQ(a, b)
+ASSERT_STRCASENE(a, b)
+EXPECT_STREQ(a, b)
+EXPECT_STRNE(a, b)
+EXPECT_STRCASEEQ(a, b)
+EXPECT_STRCASENE(a, b)
+
+Проверка плавающей точки:
+ASSERT_FLOAT_EQ(a, b)
+ASSERT_DOUBLE_EQ(a, b)
+ASSERT_NEAR(val1, val2, abs_error)
+EXPECT_FLOAT_EQ(a, b)
+EXPECT_DOUBLE_EQ(a, b)
+EXPECT_NEAR(val1, val2, abs_error)
+
+Перехват исключений:
+ASSERT_THROW(statement, exception_type)
+ASSERT_ANY_THROW(statement)
+ASSERT_NO_THROW(statement)
+EXPECT_THROW(statement, exception_type)
+EXPECT_ANY_THROW(statement)
+EXPECT_NO_THROW(statement)
+
+Сравнения предикат-значения:
+ASSERT_PRED_FORMAT2(pred_format, val1, val2)
+EXPECT_PRED_FORMAT2(pred_format, val1, val2)
+
+**Сравнения для фатальных ошибок и нет:
+ADD_FAILURE()
+ADD_FAILURE_AT(file, line)
+FAIL()
+SUCCEED()
+
+Пользовательские проверки:
+static_assert(expression, message)
+Они могут быть использованы для различных проверок в ваших тестах. Именно эти макросы обеспечивают мощный функционал для создания универсальных тестов на С++.
+
+GTEST_SKIP() << "Skipping this test because of some condition.";
+Google Test поддерживает префикс DISABLED_ для отключения определенных тестов или наборов тестов.
+
+--gtest_list_tests: Список всех тестов в исполняемом файле.Не запускает никаких тестов.
+--gtest_filter=TestPattern: Запускает тесты, которые соответствуют данному шаблону. Вы можете использовать * как символ подстановки, который соответствует любому количеству символов.
+--gtest_also_run_disabled_tests: Запускает тесты, отключенные с помощью предварительного префикса DISABLED_ в имени теста.
+--gtest_repeat=n: Повторяет все тесты n раз. Если n отрицательное, тесты повторяются в бесконечном цикле. По умолчанию тесты выполняются один раз.
+--gtest_shuffle: Перемешивает порядок выполнения тестов в случайном порядке. Это может помочь обнаружить, если тесты взаимодействуют друг с другом.
+--gtest_random_seed=n: Задает начальное значение для генератора случайных чисел. Используется в комбинации с --gtest_shuffle.
+--gtest_color=yes/no/auto: Включает, выключает или автоматически определяет (основываясь на возможностях консоли), будет ли использоваться цветное выделение вывода.
+--gtest_break_on_failure: Контролирует, приостанавливается ли выполнение в отладчике на ошибке.
+--gtest_throw_on_failure: Если установлено, Google Test будет выбрасывать исключение C++ при сбое утверждения. Если не установлен, Google Test будет продолжать переключение контекста после сбоя утверждения.
+--gtest_catch_exceptions: Контролирует, будет ли Google Test перехватывать все исключения, возникающие в тестах.
+Документация:
+https://github.com/google/googletest/blob/main/docs/
+
+Создание мокового объекта:
+class MockMyClass : public MyClass {
+public:
+  MOCK_METHOD(return_type, method_name, (arg_type1, arg_type2));
+  //...
+};
+
+Установка ожиданий:
+MockMyClass mock;
+EXPECT_CALL(mock, method_name(_, _))
+  .Times(1)
+  .WillOnce(some_action);
+
+MOCK_METHOD: Этот макрос используется для создания мокового метода в моковом классе. 
+MOCK_METHOD(return_type, method_name, (arg_type1, arg_type2), (override));
+
+EXPECT_CALL: Этот макрос используется для указания, что ожидается вызов определенного мокового метода.
+Times, WillOnce, WillRepeatedly и Return: Эти макросы используются вместе с EXPECT_CALL чтобы указать, сколько раз ожидается вызов метода и какой ответ должен быть возвращен.
+
+EXPECT_CALL(mock_object, method_name)
+  .Times(3)
+  .WillOnce(Return(some_value))
+  .WillOnce(Return(other_value))
+  .WillOnce(Return(another_value));
+Также, Google Mock предлагает макросы для обработки аргументов в EXPECT_CALL, например An, AnyNumber, DoAll, SetArgPointee, SaveArg, InSequence и многие другие.
+
+Документация:
+https://github.com/google/googletest/blob/main/docs/gmock_for_dummies.md
