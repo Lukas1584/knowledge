@@ -4,6 +4,7 @@ cd googletest
 mkdir build && cd build
 cmake ..
 make
+sudo make install
 Теперь у вас есть статические библиотеки gtest и gtest_main, которые вы можете связать со своим проектом.
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>

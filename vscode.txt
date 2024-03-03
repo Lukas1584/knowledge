@@ -1,35 +1,133 @@
-CMake
-Для добавления в проект VS Code:
-Вам потребуется файл tasks.json. Ctrl+Shift+B и выберите команду Configure Build Task.
-Он должен содержать действия по сборке вашего проекта и тестов, а также информацию о том, где находится бинарный файл Google Test (gtest_main.a или gtest.lib).
-tasks.json:
+CTRL+SHIFT+P - настройки
+CTRL+SHIFT+E - explore
+CTRL+SHIFT+G - git
+CTRL+SHIFT+X - extensions
+CTRL+SHIFT+D - debug
+CTRL+SHIFT+F - find
+CTRL+SHIFT+H - find and replace
+CTRL+SHIFT+' - new terminal
+CTRL+B - скрыть левую панель
+CTRL+J - скрыть нижнюю панель
+CTRL+K,Z - zen mode
+SHIFT+ENTER - запустить выделенные строки в консоли
+CTRL+SPACE - подсказка
+выделить слово+F2 - переименовать везде
+CTRL+SHIFT+I - форматировать код
+ALT+стрелки - переместить строку
+CTRL+/ - комментировать/разкомментировать выделенные строки
+CTRL+SHIFT+[или] - свернуть/развернуть функцию/класс
+F12 - нырнуть в определение функции/класса
+CTRL+SHIFT+F10 - показать определение в этом же окне
+
+Debugging:
+F5 - начать/продолжить
+SHIFT+F5 - стоп
+CTRL+SHIFT+F5 - рестарт
+F10 - шагать по верхнему уровню
+F11 - нарять в функции(на уровень ниже)
+SHIFT+F11 - вынырнуть
+F9 - поставить/убрать точку остановки
+Правой кнопкой по breakpoint: expression(обычная), hit count - от количества вызовов, log message - вывод сообщений в консоль
+
+/home/.config/code/user/settings.json - глобальные настройки пользователя(CTRL+SHIFT+P => settings.json => user)
+.vscode/settings.json - локальные настройки для проекта (CTRL+SHIFT+P => settings.json => workspace)
+.vscode/launch.json - для запуска кода с определенными параметрами/дебаггера (CTRL+SHIFT+P => launch.json)
+
+Расширения:
+Code Runner - менюшка для запуска кода
+GitHub Pull Requests - для работы с гитхаб
+GitLens — для расширенной работы с гит
+SonarLint - линтер для разных языков
+vscode-icons - иконки
+
+Настройки:
+files.autoSave: "afterDelay" - автосохранение
+files.trimFinalNewlines: true - удалять лишние пустые строки в конце файла
+files.insertFinalNewline: true - вставлять пустую строку в конце файла, если ее нет
+editor.fontSize: 16 - размер шрифта
+editor.renderWhitespace: "all" - показывать пробелы
+editor.bracketPairColorization.independentColorPoolPerBracketType: true - разные цвета для скобок
+workbench.colorTheme: "Monokai" - цветовая схема
+editor.tabCompletion: "on" - предлаегает закончить слово, таб - подтвердить выбор
+
+
+===Python===
+
+Нужные расширения:
+Python
+Python Debugger
+Flake8 или autopep8 - форматтеры, помимо расширения нужно установить pip install flake8 или autopep8. Проверить в settings->Default formatter.
+Python Environment Manager - по желанию
+
+Создание виртуального окружения:
+CTRL+SHIFT+P => Python:Create Environment => Venv => выбрать интерпретатор
+
+Добавление тестирования:
+CTRL+SHIFT+P => Python:Configure Tests => pytest/unittest => root directory - создаст conftest.py, тесты начинаются с test_
+
+
+===C++===
+
+Расширения:
+C/C++ Extension Pack - для С++ и Cmake.
+
+Настройка проекта без Cmake:
+.vscode/task.json - задача, например, для build
+CTRL+SHIFT+P => Tasks:Configure Default Build => выбрать чем будет запускаться, в task.json можно корректировать аргументы запуска.
+.vscode/launch.json - для запуска
+CTRL+SHIFT+P => Add debug configuration => выбрать чем будет запускаться
+После этих настроек запуск проекта в режиме RUN или Debug будет осуществляться CTRL+F5/F5 или из панели запуска.
+
+Настройка проекта с CMake:
+CTRL+SHIFT+P => CMake:Quick start - помощник, идти по подсказкам. По окончании создастся CMakeLists.txt. Лучше иметь свой шаблон под рукой.
+CTRL+SHIFT+P => CMake: Select Kit - выбрать компилятор/выбрать кит.
+CTRL+SHIFT+P => CMake: Edit User-Local CMake kits - создаст для проекта cmake-tools-kits.json.
+Kits представляют собой коллекции настроек, которые определяют, как CMake выбирает компиляторы и другие инструменты на вашей системе.
+Поскольку конфигурация инструментов может отличаться между разными проектами или разными местами работы,
+kits позволяют выбирать разные компиляторы и настройки для разных проектов.
+CTRL+SHIFT+P => CMake: Select Variant - как собирать проект Debug/Release/MinSizeRel/RelWithDebInfo
+CTRL+SHIFT+P => CMake: Configure - создать папку сборки с файлами сборки
+CTRL+SHIFT+P => CMake: Build или F7 - запустить сборку,
+CTRL+SHIFT+P => CMake: Set Build Target - выбрать цель из CMakeLists.txt
+SHIFT+F5 - запуск приложения без дебага. Если не было настроено или сбилденно - все сделается.
+CTRL+F5 - запуск дебаг-режима для отладки
+
+Если нужно запустить два проекта по очереди, например, тесты и приложение (в случае успешного завершения тестов), можно использовать tasks.json:
 {
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build and test",
+            "label": "Build",
             "type": "shell",
-            "command": "g++",
-            "args": [
-                "-std=c++14",
-                "-I",
-                "path_to_your_project",
-                "path_to_your_project/test/your_test.cpp",
-                "-Lpath_to_googletest_lib",
-                "-lgtest_main",
-                "-lgtest",
-                "-pthread",
-                "-o",
-                "test"
-            ],
+            "command": "cmake --build ${workspaceFolder}/build",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "Test",
+            "type": "shell",
+            "command": "${workspaceFolder}/build/runTests",
+            "dependsOn": ["Build"],
             "group": {
                 "kind": "test",
                 "isDefault": true
-            },
+            }
+        },
+        {
+            "label": "Run",
+            "type": "shell",
+            "command": "${workspaceFolder}/build/app",
+            "dependsOn": ["Test"],
             "presentation": {
                 "reveal": "always"
-            }
+            },
+            "problemMatcher": []
         }
     ]
 }
-Когда вы хотите запустить тест, просто нажмите Ctrl+Shift+B и выберите задачу "build and test".
+После этого CTRL+SHIFT+P => Tasks.Run Task => выбрать запускаемый таск, в данном примере Run.
+
+
+===Docker===

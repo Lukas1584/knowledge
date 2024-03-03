@@ -49,3 +49,9 @@ include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
 # Раскомментируйте нижеследующие строки, чтобы добавить еще один исполняемый файл для тестирования
 # add_executable(runUnitTests testfile1.cpp testfile2.cpp)
 # target_link_libraries(runUnitTests gtest gtest_main)
+
+Можно включить тесты следующим образом. Тогда после сборки проекта тесты можно запустить ctest -V
+# Включение тестирования в CMake
+enable_testing()
+# Добавление теста
+add_test(NAME MyTest COMMAND runTests)
