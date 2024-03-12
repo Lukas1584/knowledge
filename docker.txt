@@ -1,7 +1,29 @@
+Docker Daemon: работает в фоновом режиме. Этот процесс отвечает за запуск и управление Docker контейнерами. 
+Docker Client: консольный клиент, при помощи которого пользователи взаимодействуют с демоном.
+Docker Images: Образы Docker содержат код вашего приложения вместе с зависимостями, которые он требует для работы.
+Docker Registry: репозиторий с образами.
+Docker Container: Docker использует Docker image, чтобы создать и запустить контейнер. Контейнер - это рабочий экземпляр образа, который вы можете запустить, остановить, переместить или удалить без влияния на другие контейнеры на вашей машине.
+Docker Network: Для обеспечения связи между контейнерами и между контейнерами и хост-машиной.
+Docker Volume: Для постоянного хранения.
+Dockerfile: инструкция для сборки образа.
+DockerCompose: инструкция для управления несколькими контейнерами. 
+
+Установка:
+sudo apt-get update
+sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+Проверка:
+sudo docker run hello-world
+добавить своего пользователя в группу 'docker', чтобы выполнять docker команды без sudo:
+sudo usermod -aG docker $USER
+и перелогиньтесь или перезагрузите компьютеры для применения этих изменений.
 
 
-Запуск С++ проекта CMakeLists.txt c boost и googletest.
-# начальный образ
+
+Dockerfile:
 FROM ubuntu:latest
 
 # обновление списка пакетов в образе и установка необходимых пакетов
@@ -9,6 +31,8 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
     libboost-all-dev \
+    python3-dev \
+    python3-pip \
     git
 
 # клонирование GoogleTest из репозитория и сборка его
@@ -23,3 +47,12 @@ WORKDIR /app/build
 
 # запуск сборки проекта
 RUN cmake .. && make
+#дополнительные команды
+# Установка зависимостей Python
+RUN pip3 install -r requirements.txt
+# Определение порта, который будет прослушиваться во время выполнения
+EXPOSE 8080
+# Настройка переменных среды
+ENV NAME World
+# Запуск Python-приложения при запуске контейнера
+CMD ["python3", "app.py"]

@@ -1,0 +1,9 @@
+Полезные команды rpm:
+rpm -ql                 list files in package
+rpm -qR                 посмотреть requires 
+rpm -q --dump           dump basic file information
+
+rmp -e,                 erase (uninstall) package
+--force                 short hand for --replacepkgs --replacefiles
+rpm -F                  upgrade package(s) if already installed
+rpm -h, --hash          print hash marks as package installs (good with -v)

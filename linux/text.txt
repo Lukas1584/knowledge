@@ -1,0 +1,4 @@
+sed
+grep
+tr
+cut
