@@ -1,9 +1,164 @@
-Полезные команды rpm:
-rpm -ql                 list files in package
-rpm -qR                 посмотреть requires 
-rpm -q --dump           dump basic file information
+Команды смотреть в мануале или https://rpm-software-management.github.io/rpm/man/
+rpm - главная работа с рпм
+rpm-misc - разное, устаревшее, дебаг, несколько выключающих опций
+rpmbuild - сборка пакетов
+rpmdeps - показывает зависимости пакета (requires/provides/obsoletes...). Не нашел на убунту и центос9.
+rpmgraph - показывает граф зависимостей пакета(не смог посмотреть)
+rpm2archive - создает tar/pax/cpio архим из рпм
+rpm2cpio - cpio архим из рпм
+rpmdb - работа с бд: инициализация, ребилд, проверка, экспорт/импорт
+rpmkeys - работа с рпм ключами: проверка, импорт
+rpmsign - подписывание пакетов
+rpmsort - сортирует список рпм пакетов
+rpmspec - проверка спеки
+gendiff - утилита для генерации патчей
 
-rmp -e,                 erase (uninstall) package
---force                 short hand for --replacepkgs --replacefiles
-rpm -F                  upgrade package(s) if already installed
-rpm -h, --hash          print hash marks as package installs (good with -v)
+Описание мануала.
+rpm
+Мануал разбит на секции:
+GENERAL OPTIONS - общие опции для всех команд
+INSTALL AND UPGRADE OPTIONS - установка/обновление пакетов в системе
+ERASE OPTIONS - удаление пакетов из системы
+QUERY OPTIONS - получение информации о пакетах из бд или из файла. Три подсекции:
+    PACKAGE SELECTION OPTIONS - Query installed package
+    PACKAGE QUERY OPTIONS - query package
+    FILE SELECTION OPTIONS - query files in package
+VERIFY OPTIONS - проверка пакета
+MISCELLANEOUS COMMANDS - разные команды, 
+FTP/HTTP OPTIONS - рпм может работать как ftp/http клиент
+FILES - где лежат файлы конфигурации, бд, макросов
+
+rpmbuild
+Мануал разбит на секции:
+GENERAL OPTIONS - общие опции для всех команд
+BUILD OPTIONS - команды для сборки пакетов
+REBUILD AND RECOMPILE OPTIONS - две опции для ребилда и рекомпайла
+SHOWRC  rpmbuild --showrc shows the values rpmbuild will use for all of the options are currently set in rpmrc and macros configuration file(s).
+FILES - где лежат файлы конфигурации, бд, макросов
+
+Большой мануал по всем темам (в основном, по сборке):
+https://rpm-software-management.github.io/rpm/manual/
+
+В том числе:
+Работа со спекой:
+https://rpm-software-management.github.io/rpm/manual/spec.html
+
+Работа с макросами:
+https://rpm-software-management.github.io/rpm/manual/macros.html
+
+Работа с Lua:
+https://rpm-software-management.github.io/rpm/manual/lua.html
+
+Релокейтабл пакеты:
+https://rpm-software-management.github.io/rpm/manual/relocatable.html
+
+%setup [options]    set up the build directory for the package, typically unpacking the package’s sources but optionally
+it can just create the directory. It accepts a number of options:
+-a N        unpack source N after changing to the build directory
+-b N        unpack source N before changing to the build directory
+-c          create the build directory (and change to it) before unpacking
+-C          Create the build directory and ensure the archive contents are unpacked there, stripping 
+            the top level directory in the archive if it exists
+-D          do not delete the build directory prior to unpacking (used
+            when more than one source is to be unpacked with `-a` or `-b`)
+-n DIR      set the name of build directory (default is `%{name}-%{version}`)
+-T          skip the default unpacking of the first source (used with `-a` or `-b`)
+-q          operate quietly
+This command changes to the build directory, typically /usr/src/redhat/BUILD, and then extracts
+the source files. This macro expects that at least one of the source files will create the necessary
+subdirectory under /usr/src/redhat/BUILD. This subdirectory should be named with the package name
+and version, such as telnet-1.0.1. If you are not using a compressed tar archive that will automatically
+create the right subdirectory, add the –c option to the %setup macro. The –c option creates the
+subdirectory for extracting the sources.
+Normally, the %setup macro deletes the subdirectory prior to extracting the sources. You can disable
+the directory deletion with the –D option.
+The %setup directive can automatically extract tar, zip, gzip, bzip2, pack, compress, and lzh
+compressed files. The tar-gzip format is most widely used, though.
+
+%autosetup  это %setup -q + %patch 0 + %patch 1 +... Defaults to quiet operation, so -q is not needed or accepted.
+Use -v to enable verbose source unpacking if needed.
+Accepts the same arguments as %setup does. The notable exceptions are:
+-N          disables automatic patch application if necessary for some reason. If %autosetup is called with -N, 
+            the patch-application phase can be manually invoked with %autopatch macro.
+-S<vcs>     specifies the VCS to use. Currently supported VCSes are: git, hg (for mercurial), bzr, quilt, patch,
+            git_am (rpm >= 4.12) and gendiff (rpm >= 4.14). If S is omitted, %autosetup defaults to patch
+-p<number>  argument to control patch prefix stripping (same as -p to %patch)
+-b          (for creating patch backups) is accepted but currently ignored - this is not meaningful for a full-blown VCS anyway.
+            If you need backups for gendiff use, use gendiff backend.
+
+%patch [options] [arguments]    patches on top of the just unpacked pristine sources.
+To apply patch number 1, the following are recognized:
+%patch 1 (since rpm >= 4.18)
+%patch -P1 (all rpm versions)
+%patch1 (deprecated, do not use)
+Arguments:
+-b SUF      backup patched files with suffix SUF
+-d DIR      change to directory DIR before doing anything else
+-E          remove files emptied by patching
+-F N        maximum fuzz factor (on context patches)
+-p N        strip N leading slashes from paths
+-R          assume reversed patch
+-o FILE     send output to FILE instead of patching in place 
+-z SUF      same as -b
+-Z          set mtime and atime from context diff headers using UTC
+-P N        apply patch number N, same as passing N as a positional argument
+
+%autopatch
+-v          verbose operation
+-p<number>  argument to control patch prefix stripping (same as -p to %patch, normally passed down from %autosetup)
+-m<number>  Apply patches starting from <number> range
+-M<number>  Apply patches up to <number> range
+
+Теория:
+When the rpm command installs a package, it goes through a number of steps:
+1. Checking the package and the files it wants to install
+When checking the package, rpm checks that all the dependencies are installed.
+In addition to checking for dependencies, the rpm command checks for conflicting packages.
+2. Performing preinstallation tasks
+3. Uncompressing the files and placing them in the proper locations
+4. Performing post-processing tasks
+5. Updating the RPM Database
+
+By default, Red Hat Linux systems expect RPMs to be built in the /usr/src/redhat directory. You can also change the default directories by
+modifying your rpmrc settings.
+
+The normal naming convention is to name the spec file with the package name and a .spec filename extension.
+
+Avoid single percent signs, %, in comments. For example:
+# Added new commands to %prep
+The rpmbuild command may report an error of a second %prep section. To get around this problem,
+use two percent signs, such as %%prep, in spec file comments.
+
+Name: myapp
+The name should not contain any spaces or other whitespace characters such as tabs or newlines.
+Remember, RPM files are named, by default, name-version-release.rpm, or name-version-release-
+architecture.rpm, so use valid characters for file names.
+The version number is used in version comparisons. The RPM comparison algorithm is fairly complex,
+but can get fooled by strange version numbers. So, your best bet is to stick to dotted numerics, such
+as 1.5 or 2.3.1.1.4 or 1.0. Version numbers such as these will compare best from within the RPM
+system.
+You cannot use a dash in the version number, as RPM uses the dash to separate the Name-Version-
+Release elements. You can use a dash in the package name, though.
+The release number should start at 1 for the first RPM you build for a given version of the package,
+and count up from there.
+The release differentiates newer updates of the RPM itself, even if the underlying application hasn’t
+changed. (The application may be compiled with different compiler options, though.) For most usage,
+simply start at 1 and each time you modify the spec file and recreate the package, increment the
+release number.
+If the version number is not enough to allow for comparisons, for example, if the version numbering
+scheme has changed radically between releases, you can define an Epoch: directive.
+If you renumber your versions, use an Epoch setting to clarify the version history.
+
+The build directory is the location where RPM actually builds the software, compiling source code,
+running the configure script, and so on. Normally, you do not need to worry about the build directory as
+the rpmbuild command properly changes to this directory as needed.
+
+The buildroot, on the other hand, acts as a staging area that looks like the final installation directory.
+The name buildroot refers to the fact that the final installation directory is usually the root directory, /.
+The install section of the spec file installs files into
+the buildroot directory in the proper subdirectories, as if the files were really under the system root
+directory, /. This allows the buildroot directory to hold all the final installed files for a package, so you
+can see what will really be installed by the package.
+You should always set the buildroot by defining a Buildroot: entry in your spec file. For example:
+Buildroot: %{_tmppath}/%{name}-%{version}-root
+You can override the buildroot with the --buildroot command-line parameter to the rpmbuild command.

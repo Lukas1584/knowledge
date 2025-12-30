@@ -1,0 +1,50 @@
+The table below shows the section numbers of the manual followed by the types of pages they contain.
+1   Executable programs or shell commands
+2   System calls (functions provided by the kernel)
+3   Library calls (functions within program libraries)
+4   Special files (usually found in /dev)
+5   File formats and conventions, e.g. /etc/passwd
+6   Games
+7   Miscellaneous (including macro packages and conventions), e.g. man(7), groff(7), man-pages(7)
+8   System administration commands (usually only for root)
+9   Kernel routines [Non standard]
+
+A manual page consists of several sections:
+Conventional section names include NAME, SYNOPSIS, CONFIGURATION, DESCRIPTION, OPTIONS, EXIT STATUS, RETURN VALUE, ERRORS, ENVIRONMENT, FILES, VERSIONS,
+CONFORMING TO, NOTES, BUGS, EXAMPLE, AUTHORS, and SEE ALSO.
+
+EXAMPLES
+man ls   Display the manual page for the item (program) ls.
+man man.7
+man 'man(7)'
+man 7 man    Display  the manual page for macro package man from section 7
+
+man -a intro    Display, in succession, all of the available intro manual pages contained within the manual.  It is possible to quit between successive displays or skip
+                any of them.
+man -k printf   Search the short descriptions and manual page names for the keyword printf as regular expression.  Print out any matches. --apropos 
+man -f smail    Lookup the manual pages referenced by smail and print out the short descriptions of any found. --whatis
+
+MOVING
+f  ^F  ^V  SPACE  *  Forward  one window (or N lines).
+b  ^B  ESC-v      *  Backward one window (or N lines).
+d  ^D             *  Forward  one half-window (and set half-window to N).
+u  ^U             *  Backward one half-window (and set half-window to N).
+
+SEARCHING
+/pattern          *  Search forward for (N-th) matching line.
+?pattern          *  Search backward for (N-th) matching line.
+n                 *  Repeat previous search (for N-th occurrence).
+N                 *  Repeat previous search in reverse direction.
+ESC-n             *  Repeat previous search, spanning files.
+ESC-N             *  Repeat previous search, reverse dir. & spanning files.
+ESC-u                Undo (toggle) search highlighting.
+ESC-U                Clear search highlighting.
+&pattern          *  Display only matching lines.
+
+A search pattern may begin with one or more of:
+^N or !  Search for NON-matching lines.
+^E or *  Search multiple files (pass thru END OF FILE).
+^F or @  Start search at FIRST file (for /) or last file (for ?).
+^K       Highlight matches, but don't move (KEEP position).
+^R       Don't use REGULAR EXPRESSIONS.
+^W       WRAP search if no match found.

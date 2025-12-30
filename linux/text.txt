@@ -2,3 +2,4 @@ sed
 grep
 tr
 cut
+cat

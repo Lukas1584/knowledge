@@ -1,0 +1,7 @@
+prints the shared objects (shared libraries) required by each program or shared object specified on the command line.
+
+--version               Print the version number of ldd.
+-v, --verbose           Print all information, including, for example, symbol versioning information.
+-u, --unused            Print unused direct dependencies.  (Since glibc 2.3.4.)
+-d, --data-relocs       Perform relocations and report any missing objects (ELF only).
+-r, --function-relocs   Perform relocations for both data objects and functions, and report any missing objects or functions (ELF only).

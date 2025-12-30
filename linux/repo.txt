@@ -1,0 +1,88 @@
+man dnf.conf / man yum.conf
+
+The minimal repository configuration file should aside from repo ID consists of baseurl, metalink or mirrorlist option definition.
+REPO OPTIONS
+       baseurl
+              list
+
+              List of URLs for the repository. Defaults to [].
+
+              URLs are tried in the listed order (equivalent to yum's "failovermethod=priority" behaviour).
+
+       cost   integer
+
+              The  relative  cost  of accessing this repository, defaulting to 1000. This value is compared when the priorities of two repositories are the same.
+              The repository with the lowest cost is picked. It is useful to make the library prefer on-disk repositories to remote ones.
+
+       enabled
+              boolean
+
+              Include this repository as a package source. The default is True.
+
+       gpgkey list of strings
+
+              URLs of a GPG key files that can be used for signing metadata and packages of this repository, empty by default. If a file can not be verified  us‐
+              ing the already imported keys, import of keys from this option is attempted and the keys are then used for verification.
+
+       metalink
+              string
+
+              URL of a metalink for the repository. Defaults to None.
+
+       mirrorlist
+              string
+
+              URL of a mirrorlist for the repository. Defaults to None.
+
+       module_hotfixes
+              boolean
+
+              Set this to True to disable module RPM filtering and make all RPMs from the repository available. The default is False.  This allows user to create
+              a repository with cherry-picked hotfixes that are included in a package set on a modular system.
+
+       name   string
+
+              A human-readable name of the repository. Defaults to the ID of the repository.
+
+       priority
+              integer
+
+              The priority value of this repository, default is 99. If there is more than one candidate package for a particular operation, the one from  a  repo
+              with the lowest priority value is picked, possibly despite being less convenient otherwise (e.g. by being a lower version).
+
+       type   string
+
+              Type of repository metadata. Supported values are: rpm-md.  Aliases for rpm-md: rpm, repomd, rpmmd, yum, YUM.
+
+
+REPO VARIABLES
+       Right side of every repo option can be enriched by the following variables:
+
+       $arch
+          Refers to the system’s CPU architecture e.g, aarch64, i586, i686 and x86_64.
+
+       $basearch
+          Refers  to  the  base  architecture of the system. For example, i686 and i586 machines both have a base architecture of i386, and AMD64 and Intel64 ma‐
+          chines have a base architecture of x86_64.
+
+       $releasever
+          Refers to the release version of operating system which DNF derives from information available in RPMDB.
+
+       In addition to these hard coded variables, user-defined ones can also be used. They can be defined either via variable files, or by using special environ‐
+       mental variables. The names of these variables must be prefixed with DNF_VAR_ and they can only consist of alphanumeric characters and underscores:
+
+          $ DNF_VAR_MY_VARIABLE=value
+
+       To use such variable in your repository configuration remove the prefix. E.g.:
+
+          [myrepo]
+          baseurl=https://example.site/pub/fedora/$MY_VARIABLE/releases/$releasever
+
+       Note that it is not possible to override the arch and basearch variables using either variable files or environmental variables.
+
+       Although users are encouraged to use named variables, the numbered environmental variables DNF0 - DNF9 are still supported:
+
+          $ DNF1=value
+
+          [myrepo]
+          baseurl=https://example.site/pub/fedora/$DNF1/releases/$releasever

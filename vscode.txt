@@ -129,5 +129,112 @@ CTRL+F5 - запуск дебаг-режима для отладки
 }
 После этого CTRL+SHIFT+P => Tasks.Run Task => выбрать запускаемый таск, в данном примере Run.
 
+30.12.2026
+Настройка для С++:
+Форматер: clang-formater.
+Линтер: clang-tidy.
+Установить sudo apt clang-formater clang-tidy.
+Установить расширения Clang-Format clangd (будет конфликтовать с intelliSence).
+Добавить в settings.json:
+
+  "editor.formatOnSave": true,
+  "clangd.arguments": [
+    "--clang-tidy",
+    "--all-scopes-completion",
+    "--header-insertion=never",
+    "--cross-file-rename",
+    "--compile-commands-dir=build"
+  ],
+
+Добавить файл с настройками для форматтера .clang-format
+
+# .clang-format
+BasedOnStyle: Google
+Language: Cpp
+Standard: c++20
+
+# Общие параметры
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+ColumnLimit: 120         # у Google по умолчанию 80; часто увеличивают до 100–120
+DerivePointerAlignment: false
+PointerAlignment: Left   # Google: Left
+SpaceBeforeParens: ControlStatements
+BreakBeforeBraces: Attach  # Google тоже использует Attach
+
+# Комментарии/докстроки
+ReflowComments: false
+CommentPragmas: '^ IWYU pragma:'
+
+# Выровнять
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveDeclarations: None
+AlignTrailingComments: true
+
+# include-ы
+SortIncludes: true
+IncludeBlocks: Regroup   # группировать стандартные/проектные
+IncludeCategories:
+  - Regex: '^<[^"]+>$'   # системные <> сначала
+    Priority: 1
+  - Regex: '^[<"].*\.h[">]$'  # заголовки .h стандартные/внешние
+    Priority: 2
+  - Regex: '.*'          # всё остальное
+    Priority: 3
+
+# Склейка/переносы
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: False
+BinPackArguments: true
+BinPackParameters: true
+
+# Неймспейсы/using
+FixNamespaceComments: true
+NamespaceIndentation: None
+
+# Препроцессор
+IndentPPDirectives: AfterHash
+
+# C++ specifics
+Cpp11BracedListStyle: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+BreakConstructorInitializers: AfterColon
+
+Добавить файл для настройки линтера .clang-tidy:
+
+# .clang-tidy
+Checks: >
+  -*,
+  bugprone-*,
+  performance-*,
+  readability-*,
+  modernize-*,
+  cppcoreguidelines-*,
+  clang-analyzer-*,
+  hicpp-*,
+  misc-*,
+  portability-*
+
+WarningsAsErrors: >
+  bugprone-*,
+  clang-analyzer-*,
+  cppcoreguidelines-*
+
+HeaderFilterRegex: '.*'
+AnalyzeTemporaryDtors: true
+FormatStyle: none
+
+# Параметры конкретных чеков:
+CheckOptions:
+  - key:             modernize-use-nullptr.NullMacros
+    value:           'NULL'
+  - key:             readability-identifier-naming.VariableCase
+    value:           'camelBack'
+  - key:             readability-identifier-naming.ClassCase
+    value:           'CamelCase'
+
+
 
 ===Docker===
