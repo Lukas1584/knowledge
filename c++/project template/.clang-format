@@ -1,0 +1,53 @@
+# .clang-format
+BasedOnStyle: Google
+Language: Cpp
+Standard: c++20
+
+# Общие параметры
+IndentWidth: 2
+TabWidth: 2
+UseTab: Never
+ColumnLimit: 120         # у Google по умолчанию 80; часто увеличивают до 100–120
+DerivePointerAlignment: false
+PointerAlignment: Left   # Google: Left
+SpaceBeforeParens: ControlStatements
+BreakBeforeBraces: Attach  # Google тоже использует Attach
+
+# Комментарии/докстроки
+ReflowComments: false
+CommentPragmas: '^ IWYU pragma:'
+
+# Выровнять
+AlignConsecutiveAssignments: Consecutive
+AlignConsecutiveDeclarations: None
+AlignTrailingComments: true
+
+# include-ы
+SortIncludes: true
+IncludeBlocks: Regroup   # группировать стандартные/проектные
+IncludeCategories:
+  - Regex: '^<[^"]+>$'   # системные <> сначала
+    Priority: 1
+  - Regex: '^[<"].*\.h[">]$'  # заголовки .h стандартные/внешние
+    Priority: 2
+  - Regex: '.*'          # всё остальное
+    Priority: 3
+
+# Склейка/переносы
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: False
+BinPackArguments: true
+BinPackParameters: true
+
+# Неймспейсы/using
+FixNamespaceComments: true
+NamespaceIndentation: None
+
+# Препроцессор
+IndentPPDirectives: AfterHash
+
+# C++ specifics
+Cpp11BracedListStyle: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+BreakConstructorInitializers: AfterColon

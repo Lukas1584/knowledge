@@ -1,0 +1,21 @@
+{
+  // Общие
+  "editor.formatOnSave": true,
+
+  // CMake Tools
+  "cmake.useCMakePresets": "always",
+  "cmake.configureOnOpen": true,
+
+  // clangd будет сам находить .clang-format и запускать clang-tidy
+  "clangd.arguments": [
+    "--clang-tidy",
+    "--all-scopes-completion",
+    "--header-insertion=never",
+    "--cross-file-rename",
+    "--compile-commands-dir=build"
+  ],
+  "C_Cpp.codeAnalysis.clangTidy.checks.disabled": [
+    "modernize-use-trailing-return-type"
+  ],
+
+}

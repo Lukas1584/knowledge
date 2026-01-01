@@ -1,0 +1,29 @@
+# .clang-tidy
+Checks: >
+  -*,
+  bugprone-*,
+  performance-*,
+  readability-*,
+  modernize-*,
+  cppcoreguidelines-*,
+  clang-analyzer-*,
+  hicpp-*,
+  misc-*,
+  portability-*
+
+WarningsAsErrors: >
+  bugprone-*,
+  clang-analyzer-*,
+  cppcoreguidelines-*
+
+HeaderFilterRegex: '.*'
+FormatStyle: none
+
+# Параметры конкретных чеков:
+CheckOptions:
+  - key:             modernize-use-nullptr.NullMacros
+    value:           'NULL'
+  - key:             readability-identifier-naming.VariableCase
+    value:           'camelBack'
+  - key:             readability-identifier-naming.ClassCase
+    value:           'CamelCase'
