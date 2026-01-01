@@ -1,7 +1,7 @@
 Установить расширения:
-C++ TestMate - для запуска тестов отдельная панель
+C++ TestMate - для запуска тестов(отдельная панель в VScode)
 clangd - основное приложения для работы с С++ (альтернатива intellisence). включает форматтер clang-format и линтер clang-tidy (должны быть установлены в системе все 3)
-CMake Tools - для настройки проектов через cmake
+CMake Tools - для настройки запуска cmake проекта
 CodeLLDB - дебаггер для С++
 
 Структура проекта:
@@ -9,7 +9,7 @@ CodeLLDB - дебаггер для С++
 -include	 - исходники с кодом *.h
 -tests		 - тесты
 -build		 - сборочные файлы для cmake
--.vscode	 - настройки vscode: launch.json settings.json tasks.json
+-.vscode	 - настройки vscode: launch.json(для запуска дебаггера) settings.json(настройки проекта)
 -.git
 .clang-format	 - настройки форматера
 .clang-tidy	 - настройки линтера
@@ -19,9 +19,9 @@ CMakePresets.json - описывает Debug/Release и build‑папки
 Запускать:
 ctrl+shift+p
 CMake: Select Configure Preset → debug или release.
-Build в статус‑баре(с шестеренкой)
-Run/ctrl+shift+p -> Cmake: Debug (shift+F5)/ctrl+shift+p -> Cmake: Run Without Debbuging (ctrl+shift+F5)
+Build в статус‑баре(с шестеренкой-сконфигурирует и сбилдит)
+Run стрелочка рядом с шестеренкой
 
 Для запуска целей format и tidy:
 ctrl+shift+p -> Cmake: Build Target -> format/tidy
-Только после этого tidy заработает в коде.
+После этого tidy должен заработать лучше.
